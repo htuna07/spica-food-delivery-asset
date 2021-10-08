@@ -1,0 +1,738 @@
+---
+# API KEY
+apiVersion: passport/v1
+kind: ApiKey
+metadata:
+  name: food-delivery-apikey
+spec:
+  name: Food Delivery Apikey
+  policies:
+    - BucketFullAccess
+---
+# BUCKET - Order
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: order-bucket
+spec:
+  title: Order
+  description: All orders
+  icon: room_service
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    delivery_location:
+      type: location
+      title: Delivery Location
+      options:
+        position: bottom
+      locationType: Point
+    created_at:
+      type: date
+      title: Created at
+      description: What time the order was created
+      default: :created_at
+      options:
+        position: bottom
+    status:
+      type: string
+      title: Status
+      description: Status of the order
+      enum:
+        - preparing
+        - delivering
+        - delivered
+        - cancelled
+      default: preparing
+      options:
+        position: bottom
+    price:
+      type: number
+      title: Price
+      options:
+        position: bottom
+    payment_method:
+      type: string
+      title: Payment method
+      description: Payment method of the order
+      enum:
+        - cash
+        - credit_card
+        - online
+      options:
+        position: bottom
+    note:
+      type: textarea
+      title: Note
+      description: Note of the order
+      options:
+        position: bottom
+    foods:
+      type: array
+      title: Foods
+      description: Description of the Foods input
+      options:
+        position: bottom
+      items:
+        title: Title of the items
+        type: object
+        properties:
+          _id:
+            type: string
+            title: _id
+            description: Description of the _id input
+            options:
+              position: bottom
+          name:
+            type: string
+            title: name
+            description: Description of the name input
+            options:
+              position: bottom
+          ingredients:
+            type: array
+            title: ingredients
+            description: Description of the ingredients input
+            options:
+              position: bottom
+            items:
+              title: Title of the items
+              type: string
+          price:
+            type: number
+            title: price
+            description: Description of the price input
+            options:
+              position: bottom
+          count:
+            type: number
+            title: count
+            description: Description of the count input
+            options:
+              position: bottom
+            minimum: 1
+  primary: note
+  order: 0
+  history: false
+---
+# BUCKET - Courier
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: courier-bucket
+spec:
+  title: Courier
+  description: Order Couriers
+  icon: sports_motorsports
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Name
+      description: Name of the courier
+      options:
+        position: left
+    current_orders:
+      type: relation
+      title: Current Orders
+      description: Current orders that courier is delivering
+      relationType: onetomany
+      options:
+        position: bottom
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: order-bucket
+    current_vehicle:
+      type: relation
+      relationType: onetoone
+      title: Current Vehicle
+      description: Current vehicle that courier is using
+      options:
+        position: right
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: vehicle-bucket
+  primary: current_vehicle
+  order: 0
+  history: false
+---
+# BUCKET - User
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: user-bucket
+spec:
+  title: User
+  description: Users
+  icon: people
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    identity_id:
+      type: string
+      title: Identity Id
+      description: Identity id
+      options:
+        position: left
+    name:
+      type: string
+      title: Name
+      description: Name of the user
+      options:
+        position: right
+    surname:
+      type: string
+      title: Surname
+      description: Surname of the user
+      options:
+        position: bottom
+    phone:
+      type: string
+      title: Phone
+      description: Phone number
+      options:
+        position: bottom
+  primary: name
+  order: 0
+  history: false
+---
+# BUCKET - Order
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: order-bucket
+spec:
+  title: Order
+  description: All orders
+  icon: room_service
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    delivery_location:
+      type: location
+      title: Delivery Location
+      options:
+        position: bottom
+      locationType: Point
+    user:
+      type: relation
+      title: User
+      description: Owner of the order
+      relationType: onetoone
+      options:
+        position: bottom
+      dependent: false
+      primary: name
+      bucket:
+        resourceFieldRef:
+          schemaName: user-bucket
+    courier:
+      type: relation
+      title: Courier
+      description: Courier of the order
+      relationType: onetoone
+      options:
+        position: bottom
+      dependent: false
+      primary: current_vehicle
+      bucket:
+        resourceFieldRef:
+          schemaName: courier-bucket
+    created_at:
+      type: date
+      title: Created at
+      description: What time the order was created
+      default: :created_at
+      options:
+        position: bottom
+    status:
+      type: string
+      title: Status
+      description: Status of the order
+      enum:
+        - preparing
+        - delivering
+        - delivered
+        - cancelled
+      default: preparing
+      options:
+        position: bottom
+    price:
+      type: number
+      title: Price
+      options:
+        position: bottom
+    payment_method:
+      type: string
+      title: Payment method
+      description: Payment method of the order
+      enum:
+        - cash
+        - credit_card
+        - online
+      options:
+        position: bottom
+    note:
+      type: textarea
+      title: Note
+      description: Note of the order
+      options:
+        position: bottom
+    foods:
+      type: array
+      title: Foods
+      description: Description of the Foods input
+      options:
+        position: bottom
+      items:
+        title: Title of the items
+        type: object
+        properties:
+          _id:
+            type: string
+            title: _id
+            description: Description of the _id input
+            options:
+              position: bottom
+          name:
+            type: string
+            title: name
+            description: Description of the name input
+            options:
+              position: bottom
+          ingredients:
+            type: array
+            title: ingredients
+            description: Description of the ingredients input
+            options:
+              position: bottom
+            items:
+              title: Title of the items
+              type: string
+          price:
+            type: number
+            title: price
+            description: Description of the price input
+            options:
+              position: bottom
+          count:
+            type: number
+            title: count
+            description: Description of the count input
+            options:
+              position: bottom
+            minimum: 1
+  primary: note
+  order: 0
+  history: false
+---
+# BUCKET - Vehicle
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: vehicle-bucket
+spec:
+  title: Vehicle
+  description: Delivery vehicles
+  icon: moped
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Name
+      description: Name of the vehicle
+      options:
+        position: left
+  primary: name
+  order: 0
+  history: false
+---
+# BUCKET - Ingredient
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: ingredient-bucket
+spec:
+  title: Ingredient
+  description: Food Ingredients
+  icon: add
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Name
+      description: Name of the ingredient
+      options:
+        position: left
+    price:
+      type: number
+      title: Price
+      description: $
+      minimum: 0
+      options:
+        position: right
+    stock:
+      type: number
+      title: Stock
+      description: Stock status of the ingredient
+      minimum: 0
+      options:
+        position: left
+    unit:
+      type: string
+      title: Unit
+      description: Unit of the stock
+      options:
+        position: right
+    calories:
+      type: number
+      title: Calories
+      options:
+        position: left
+  primary: name
+  order: 0
+  history: false
+---
+# BUCKET - Rating
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: rating-5
+spec:
+  title: Rating
+  description: Food Ratings
+  icon: star
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    user:
+      type: relation
+      title: User
+      description: User of the rating
+      relationType: onetoone
+      options:
+        position: left
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: user-bucket
+    rating:
+      type: number
+      title: Rating
+      description: Rating from 1 to 5
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      options:
+        position: right
+    comment:
+      type: textarea
+      title: Comment
+      description: Comment of the rating
+      options:
+        position: bottom
+  primary: comment
+  order: 0
+  history: false
+---
+# BUCKET - Food
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: food-6
+spec:
+  title: Food
+  description: Foods
+  icon: fastfood
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Name
+      description: Food name
+      options:
+        position: left
+    description:
+      type: textarea
+      title: Description
+      description: Description of the food
+      options:
+        position: right
+    image:
+      type: storage
+      title: Image
+      options:
+        position: bottom
+    original_price:
+      type: number
+      title: Original Price
+      description: $
+      minimum: 0
+      options:
+        position: right
+    is_available:
+      type: boolean
+      title: Is Available
+      description: Whether the food is available to prepare
+      default: true
+      options:
+        position: bottom
+    ratings:
+      type: relation
+      title: Ratings
+      description: Ratings of the food
+      relationType: onetomany
+      dependent: true
+      options:
+        position: bottom
+      primary: comment
+      bucket:
+        resourceFieldRef:
+          schemaName: rating-5
+    preparation_time:
+      type: number
+      title: Preparation Time
+      description: Estimated preparation time in minutes
+      minimum: 0
+      options:
+        position: bottom
+    extra_ingredients:
+      type: relation
+      title: Extra Ingredients
+      description: Description of the extra_ingredients input
+      options:
+        position: left
+      relationType: onetomany
+      dependent: false
+      primary: name
+      bucket:
+        resourceFieldRef:
+          schemaName: ingredient-bucket
+    removable_ingredients:
+      type: relation
+      title: Removable Ingredients
+      description: Ingredients that can be removed from food
+      options:
+        position: left
+      relationType: onetomany
+      dependent: false
+      primary: name
+      bucket:
+        resourceFieldRef:
+          schemaName: ingredient-bucket
+    calories:
+      type: number
+      title: Calories
+      description: Total calories of the food
+      options:
+        position: bottom
+      minimum: 0
+    ingredients:
+      type: relation
+      title: ingredients
+      description: Description of the Ingredients input
+      options:
+        position: left
+      relationType: onetomany
+      dependent: false
+      primary: name
+      bucket:
+        resourceFieldRef:
+          schemaName: ingredient-bucket
+    price:
+      type: number
+      title: Price
+      description: Description of the price input
+      options:
+        position: bottom
+      minimum: 0
+  primary: name
+  order: 0
+  history: false
+---
+# BUCKET - Discount
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: discount-bucket
+spec:
+  title: Discount
+  description: Discounts
+  icon: local_offer
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Name
+      description: Name of the discount
+      options:
+        position: left
+    foods:
+      type: relation
+      title: Foods
+      description: Which foods will be included to the discount
+      relationType: onetomany
+      options:
+        position: bottom
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: food-6
+    from:
+      type: date
+      title: From
+      description: What time the discont will be started
+      options:
+        position: left
+    until:
+      type: date
+      title: Until
+      description: What time the discont will be ended
+      options:
+        position: right
+    discount:
+      type: number
+      title: Discount(%)
+      description: Percentage of the discount
+      minimum: 0
+      maximum: 100
+      options:
+        position: right
+  primary: discount
+  order: 0
+  history: false
+---
+# BUCKET - Category
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: category-8
+spec:
+  title: Category
+  description: Food Categories
+  icon: category
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    name:
+      type: string
+      title: Category
+      description: Name of the category
+      options:
+        position: left
+    foods:
+      type: relation
+      title: Foods
+      description: Foods of the category
+      relationType: onetomany
+      options:
+        position: right
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: food-6
+  primary: foods
+  order: 0
+  history: false
+---
+# BUCKET - Address
+apiVersion: bucket/v1
+kind: Schema
+metadata:
+  name: address-10
+spec:
+  title: Address
+  description: Addresses
+  icon: place
+  acl:
+    write: true==true
+    read: true==true
+  properties:
+    title:
+      type: string
+      title: Title
+      description: Title of the address
+      options:
+        position: left
+    location:
+      type: location
+      title: Location
+      options:
+        position: right
+      locationType: Point
+  primary: location
+  order: 10
+  history: false
+---
+# FUNCTION - Food Delivery
+apiVersion: function/v1
+kind: Function
+metadata:
+  name: food-delivery-function
+spec:
+  description: All necessary methods for food delivery asset
+  language: javascript
+  timeout: 10
+  environment:
+    - name: FOOD_DELIVERY_APIKEY
+      # we should put reference here
+      valueFrom:
+        resourceFieldRef:
+          apikeyName: food-delivery-apikey
+    - name: DISCOUNT_BUCKET
+      valueFrom:
+        resourceFieldRef:
+          schemaName: discount-bucket
+  dependency: []
+  title: Food Delivery
+  code: ./function/food-delivery.js
+  runtime:
+    name: Node
+    language: Javascript
+---
+# TRIGGER - onDiscountChange
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: onDiscountChange
+spec:
+  active: true
+  type: bucket
+  name: onDiscountChange
+  func: food-delivery-function
+  bucketOptions:
+    bucket:
+      resourceFieldRef:
+        schemaName: discount-bucket
+    type: ALL
+---
+# TRIGGER - onTick
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: onTick
+spec:
+  active: true
+  type: schedule
+  name: onTick
+  func: food-delivery-function
