@@ -1,4 +1,3 @@
----
 # API KEY
 apiVersion: passport/v1
 kind: ApiKey
