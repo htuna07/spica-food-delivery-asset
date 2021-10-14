@@ -407,7 +407,7 @@ spec:
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: rating-5
+  name: rating-bucket
 spec:
   title: Rating
   description: Food Ratings
@@ -453,7 +453,7 @@ spec:
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: food-6
+  name: food-bucket
 spec:
   title: Food
   description: Foods
@@ -504,7 +504,7 @@ spec:
       primary: comment
       bucket:
         resourceFieldRef:
-          schemaName: rating-5
+          schemaName: rating-bucket
     preparation_time:
       type: number
       title: Preparation Time
@@ -595,7 +595,7 @@ spec:
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: food-6
+          schemaName: food-bucket
     from:
       type: date
       title: From
@@ -624,7 +624,7 @@ spec:
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: category-8
+  name: category-bucket
 spec:
   title: Category
   description: Food Categories
@@ -649,7 +649,7 @@ spec:
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: food-6
+          schemaName: food-bucket
   primary: foods
   order: 0
   history: false
@@ -658,7 +658,7 @@ spec:
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: address-10
+  name: address-bucket
 spec:
   title: Address
   description: Addresses
