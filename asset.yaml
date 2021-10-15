@@ -8,113 +8,6 @@ spec:
   policies:
     - BucketFullAccess
 ---
-# BUCKET - Order
-apiVersion: bucket/v1
-kind: Schema
-metadata:
-  name: order-bucket
-spec:
-  title: Order
-  description: All orders
-  icon: room_service
-  acl:
-    write: true==true
-    read: true==true
-  properties:
-    delivery_location:
-      type: location
-      title: Delivery Location
-      options:
-        position: bottom
-      locationType: Point
-    created_at:
-      type: date
-      title: Created at
-      description: What time the order was created
-      default: :created_at
-      options:
-        position: bottom
-    status:
-      type: string
-      title: Status
-      description: Status of the order
-      enum:
-        - preparing
-        - delivering
-        - delivered
-        - cancelled
-      default: preparing
-      options:
-        position: bottom
-    price:
-      type: number
-      title: Price
-      options:
-        position: bottom
-    payment_method:
-      type: string
-      title: Payment method
-      description: Payment method of the order
-      enum:
-        - cash
-        - credit_card
-        - online
-      options:
-        position: bottom
-    note:
-      type: textarea
-      title: Note
-      description: Note of the order
-      options:
-        position: bottom
-    foods:
-      type: array
-      title: Foods
-      description: Description of the Foods input
-      options:
-        position: bottom
-      items:
-        title: Title of the items
-        type: object
-        properties:
-          _id:
-            type: string
-            title: _id
-            description: Description of the _id input
-            options:
-              position: bottom
-          name:
-            type: string
-            title: name
-            description: Description of the name input
-            options:
-              position: bottom
-          ingredients:
-            type: array
-            title: ingredients
-            description: Description of the ingredients input
-            options:
-              position: bottom
-            items:
-              title: Title of the items
-              type: string
-          price:
-            type: number
-            title: price
-            description: Description of the price input
-            options:
-              position: bottom
-          count:
-            type: number
-            title: count
-            description: Description of the count input
-            options:
-              position: bottom
-            minimum: 1
-  primary: note
-  order: 0
-  history: false
----
 # BUCKET - Courier
 apiVersion: bucket/v1
 kind: Schema
@@ -697,7 +590,7 @@ spec:
       # we should put reference here
       valueFrom:
         resourceFieldRef:
-          apikeyName: food-delivery-apikey
+          apiKeyName: food-delivery-apikey
     - name: DISCOUNT_BUCKET
       valueFrom:
         resourceFieldRef:
@@ -735,3 +628,6 @@ spec:
   type: schedule
   name: onTick
   func: food-delivery-function
+  scheduleOptions:
+    cronSpec: '* * * * *'
+    timezone: Europe/Istanbul
