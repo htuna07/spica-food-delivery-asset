@@ -7,115 +7,175 @@ spec:
   name: Food Delivery Apikey
   policies:
     - BucketFullAccess
+    - FunctionFullAccess
+    - IdentityFullAccess
 ---
 # BUCKET - Courier
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: courier-bucket
+  name: spica-food-delivery-asset-courier-bucket
 spec:
   title: Courier
   description: Order Couriers
-  icon: sports_motorsports
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     name:
       type: string
-      title: Name
-      description: Name of the courier
+      title: name
+      description: name of the courier
       options:
         position: left
     current_orders:
       type: relation
-      title: Current Orders
-      description: Current orders that courier is delivering
+      title: current_orders
+      description: current_orders that courier is delivering
       relationType: onetomany
       options:
         position: bottom
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: order-bucket
+          schemaName: spica-food-delivery-asset-order-bucket
     current_vehicle:
       type: relation
       relationType: onetoone
-      title: Current Vehicle
-      description: Current vehicle that courier is using
+      title: current_vehicle
+      description: current_vehicle that courier is using
       options:
         position: right
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: vehicle-bucket
-  primary: current_vehicle
-  order: 0
+          schemaName: spica-food-delivery-asset-vehicle-bucket
+  primary: name
+  order: 99
   history: false
 ---
 # BUCKET - User
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: user-bucket
+  name: spica-food-delivery-asset-user-bucket
 spec:
   title: User
   description: Users
-  icon: people
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     identity_id:
       type: string
-      title: Identity Id
+      title: identity_id
       description: Identity id
       options:
         position: left
     name:
       type: string
-      title: Name
+      title: name
       description: Name of the user
       options:
         position: right
     surname:
       type: string
-      title: Surname
+      title: surname
       description: Surname of the user
       options:
         position: bottom
     phone:
       type: string
-      title: Phone
+      title: phone
       description: Phone number
       options:
         position: bottom
+    email:
+      type: string
+      title: email
+      description: Email of the user
+      options:
+        position: right
+    profile_picture:
+      type: storage
+      title: profile_picture
+      description: User profile picture
+      options:
+        position: bottom
+    address:
+      type: array
+      title: address
+      description: Description of the address input
+      options:
+        position: bottom
+      items:
+        title: Title of the items
+        type: object
+        properties:
+          title:
+            type: string
+            title: title
+            description: Description of the title input
+            options:
+              position: bottom
+          country:
+            type: string
+            title: country
+            description: Description of the country input
+            options:
+              position: bottom
+          province:
+            type: string
+            title: province
+            description: Description of the province input
+            options:
+              position: bottom
+          district:
+            type: string
+            title: district
+            description: Description of the district input
+            options:
+              position: bottom
+          full_address:
+            type: string
+            title: full_address
+            description: Description of the full_address input
+            options:
+              position: bottom
+          phone:
+            type: string
+            title: phone
+            description: Description of the phone input
+            options:
+              position: bottom
   primary: name
-  order: 0
+  order: 100
   history: false
 ---
 # BUCKET - Order
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: order-bucket
+  name: spica-food-delivery-asset-order-bucket
 spec:
   title: Order
   description: All orders
-  icon: room_service
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     delivery_location:
       type: location
-      title: Delivery Location
+      title: delivery_location
       options:
         position: bottom
       locationType: Point
     user:
       type: relation
-      title: User
+      title: user
       description: Owner of the order
       relationType: onetoone
       options:
@@ -124,10 +184,10 @@ spec:
       primary: name
       bucket:
         resourceFieldRef:
-          schemaName: user-bucket
+          schemaName: spica-food-delivery-asset-user-bucket
     courier:
       type: relation
-      title: Courier
+      title: courier
       description: Courier of the order
       relationType: onetoone
       options:
@@ -136,17 +196,17 @@ spec:
       primary: current_vehicle
       bucket:
         resourceFieldRef:
-          schemaName: courier-bucket
+          schemaName: spica-food-delivery-asset-courier-bucket
     created_at:
       type: date
-      title: Created at
+      title: created_at
       description: What time the order was created
       default: :created_at
       options:
         position: bottom
     status:
       type: string
-      title: Status
+      title: status
       description: Status of the order
       enum:
         - preparing
@@ -158,12 +218,12 @@ spec:
         position: bottom
     price:
       type: number
-      title: Price
+      title: price
       options:
         position: bottom
     payment_method:
       type: string
-      title: Payment method
+      title: payment_method
       description: Payment method of the order
       enum:
         - cash
@@ -173,13 +233,13 @@ spec:
         position: bottom
     note:
       type: textarea
-      title: Note
+      title: note
       description: Note of the order
       options:
         position: bottom
     foods:
       type: array
-      title: Foods
+      title: foods
       description: Description of the Foods input
       options:
         position: bottom
@@ -221,97 +281,151 @@ spec:
             options:
               position: bottom
             minimum: 1
+    address:
+      type: object
+      title: address
+      description: Description of the address input
+      options:
+        position: bottom
+        properties:
+          title:
+            type: string
+            title: title
+            description: Description of the title input
+            options:
+              position: bottom
+          country:
+            type: string
+            title: country
+            description: Description of the country input
+            options:
+              position: bottom
+          province:
+            type: string
+            title: province
+            description: Description of the province input
+            options:
+              position: bottom
+          district:
+            type: string
+            title: district
+            description: Description of the district input
+            options:
+              position: bottom
+          full_address:
+            type: string
+            title: full_address
+            description: Description of the full_address input
+            options:
+              position: bottom
+          phone:
+            type: string
+            title: phone
+            description: Description of the phone input
+            options:
+              position: bottom
+    rating:
+      type: relation
+      title: rating
+      description: Description of the rating input
+      relationType: onetoone
+      options:
+        position: left
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: spica-food-delivery-asset-rating-bucket
   primary: note
-  order: 0
+  order: 101
   history: false
 ---
 # BUCKET - Vehicle
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: vehicle-bucket
+  name: spica-food-delivery-asset-vehicle-bucket
 spec:
   title: Vehicle
   description: Delivery vehicles
-  icon: moped
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     name:
       type: string
-      title: Name
+      title: name
       description: Name of the vehicle
       options:
         position: left
   primary: name
-  order: 0
+  order: 102
   history: false
 ---
 # BUCKET - Ingredient
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: ingredient-bucket
+  name: spica-food-delivery-asset-ingredient-bucket
 spec:
   title: Ingredient
   description: Food Ingredients
-  icon: add
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     name:
       type: string
-      title: Name
+      title: name
       description: Name of the ingredient
       options:
         position: left
     price:
       type: number
-      title: Price
+      title: price
       description: $
       minimum: 0
       options:
         position: right
     stock:
       type: number
-      title: Stock
+      title: stock
       description: Stock status of the ingredient
       minimum: 0
       options:
         position: left
     unit:
       type: string
-      title: Unit
+      title: unit
       description: Unit of the stock
       options:
         position: right
     calories:
       type: number
-      title: Calories
+      title: calories
       options:
         position: left
   primary: name
-  order: 0
+  order: 103
   history: false
 ---
 # BUCKET - Rating
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: rating-bucket
+  name: spica-food-delivery-asset-rating-bucket
 spec:
   title: Rating
   description: Food Ratings
-  icon: star
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     user:
       type: relation
-      title: User
+      title: user
       description: User of the rating
       relationType: onetoone
       options:
@@ -319,10 +433,10 @@ spec:
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: user-bucket
+          schemaName: spica-food-delivery-asset-user-bucket
     rating:
       type: number
-      title: Rating
+      title: rating
       description: Rating from 1 to 5
       enum:
         - 1
@@ -334,19 +448,19 @@ spec:
         position: right
     comment:
       type: textarea
-      title: Comment
+      title: comment
       description: Comment of the rating
       options:
         position: bottom
   primary: comment
-  order: 0
+  order: 104
   history: false
 ---
 # BUCKET - Food
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: food-bucket
+  name: spica-food-delivery-asset-food-bucket
 spec:
   title: Food
   description: Foods
@@ -357,38 +471,49 @@ spec:
   properties:
     name:
       type: string
-      title: Name
+      title: name
       description: Food name
       options:
         position: left
+    categories:
+      type: relation
+      title: categories
+      description: Food categories
+      relationType: onetomany
+      options:
+        position: right
+      dependent: false
+      bucket:
+        resourceFieldRef:
+          schemaName: spica-food-delivery-asset-category-bucket
     description:
       type: textarea
-      title: Description
+      title: description
       description: Description of the food
       options:
         position: right
     image:
       type: storage
-      title: Image
+      title: image
       options:
         position: bottom
     original_price:
       type: number
-      title: Original Price
+      title: original_price
       description: $
       minimum: 0
       options:
         position: right
     is_available:
       type: boolean
-      title: Is Available
+      title: is_available
       description: Whether the food is available to prepare
       default: true
       options:
         position: bottom
     ratings:
       type: relation
-      title: Ratings
+      title: ratings
       description: Ratings of the food
       relationType: onetomany
       dependent: true
@@ -397,17 +522,17 @@ spec:
       primary: comment
       bucket:
         resourceFieldRef:
-          schemaName: rating-bucket
+          schemaName: spica-food-delivery-asset-rating-bucket
     preparation_time:
       type: number
-      title: Preparation Time
+      title: preparation_time
       description: Estimated preparation time in minutes
       minimum: 0
       options:
         position: bottom
     extra_ingredients:
       type: relation
-      title: Extra Ingredients
+      title: extra_ingredients
       description: Description of the extra_ingredients input
       options:
         position: left
@@ -416,10 +541,10 @@ spec:
       primary: name
       bucket:
         resourceFieldRef:
-          schemaName: ingredient-bucket
+          schemaName: spica-food-delivery-asset-ingredient-bucket
     removable_ingredients:
       type: relation
-      title: Removable Ingredients
+      title: removable_ingredients
       description: Ingredients that can be removed from food
       options:
         position: left
@@ -428,10 +553,10 @@ spec:
       primary: name
       bucket:
         resourceFieldRef:
-          schemaName: ingredient-bucket
+          schemaName: spica-food-delivery-asset-ingredient-bucket
     calories:
       type: number
-      title: Calories
+      title: calories
       description: Total calories of the food
       options:
         position: bottom
@@ -447,40 +572,40 @@ spec:
       primary: name
       bucket:
         resourceFieldRef:
-          schemaName: ingredient-bucket
+          schemaName: spica-food-delivery-asset-ingredient-bucket
     price:
       type: number
-      title: Price
+      title: price
       description: Description of the price input
       options:
         position: bottom
       minimum: 0
   primary: name
-  order: 0
+  order: 105
   history: false
 ---
 # BUCKET - Discount
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: discount-bucket
+  name: spica-food-delivery-asset-discount-bucket
 spec:
   title: Discount
   description: Discounts
-  icon: local_offer
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     name:
       type: string
-      title: Name
+      title: name
       description: Name of the discount
       options:
         position: left
     foods:
       type: relation
-      title: Foods
+      title: foods
       description: Which foods will be included to the discount
       relationType: onetomany
       options:
@@ -488,99 +613,88 @@ spec:
       dependent: false
       bucket:
         resourceFieldRef:
-          schemaName: food-bucket
+          schemaName: spica-food-delivery-asset-food-bucket
     from:
       type: date
-      title: From
+      title: from
       description: What time the discont will be started
       options:
         position: left
     until:
       type: date
-      title: Until
+      title: until
       description: What time the discont will be ended
       options:
         position: right
     discount:
       type: number
-      title: Discount(%)
+      title: discount
       description: Percentage of the discount
       minimum: 0
       maximum: 100
       options:
         position: right
   primary: discount
-  order: 0
+  order: 106
   history: false
 ---
 # BUCKET - Category
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: category-bucket
+  name: spica-food-delivery-asset-category-bucket
 spec:
   title: Category
   description: Food Categories
-  icon: category
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     name:
       type: string
-      title: Category
+      title: name
       description: Name of the category
       options:
         position: left
-    foods:
-      type: relation
-      title: Foods
-      description: Foods of the category
-      relationType: onetomany
-      options:
-        position: right
-      dependent: false
-      bucket:
-        resourceFieldRef:
-          schemaName: food-bucket
-  primary: foods
-  order: 0
+  primary: name
+  order: 107
   history: false
 ---
 # BUCKET - Address
 apiVersion: bucket/v1
 kind: Schema
 metadata:
-  name: address-bucket
+  name: spica-food-delivery-asset-address-bucket
 spec:
   title: Address
   description: Addresses
-  icon: place
+  icon: fastfood
   acl:
     write: true==true
     read: true==true
   properties:
     title:
       type: string
-      title: Title
+      title: title
       description: Title of the address
       options:
         position: left
     location:
       type: location
-      title: Location
+      title: location
       options:
         position: right
       locationType: Point
   primary: location
-  order: 10
+  order: 108
   history: false
 ---
 # FUNCTION - Food Delivery
 apiVersion: function/v1
 kind: Function
 metadata:
-  name: food-delivery-function
+  name: spica-food-delivery-asset-food-delivery-function
 spec:
   description: All necessary methods for food delivery asset
   language: javascript
@@ -594,10 +708,10 @@ spec:
     - name: DISCOUNT_BUCKET
       valueFrom:
         resourceFieldRef:
-          schemaName: discount-bucket
+          schemaName: spica-food-delivery-asset-discount-bucket
   dependency: []
   title: Food Delivery
-  code: ./function/food-delivery.js
+  code: ./function/spica-food-delivery-asset-food-delivery.js
   runtime:
     name: Node
     language: Javascript
@@ -611,11 +725,11 @@ spec:
   active: true
   type: bucket
   name: onDiscountChange
-  func: food-delivery-function
+  func: spica-food-delivery-asset-food-delivery-function
   bucketOptions:
     bucket:
       resourceFieldRef:
-        schemaName: discount-bucket
+        schemaName: spica-food-delivery-asset-discount-bucket
     type: ALL
 ---
 # TRIGGER - onTick
@@ -627,7 +741,50 @@ spec:
   active: true
   type: schedule
   name: onTick
-  func: food-delivery-function
+  func: spica-food-delivery-asset-food-delivery-function
   scheduleOptions:
-    cronSpec: '* * * * *'
+    frequency: '* * * * *'
     timezone: Europe/Istanbul
+---
+# FUNCTION - Food Delivery Authorization
+apiVersion: function/v1
+kind: Function
+metadata:
+  name: spica-food-delivery-asset-authorization-function
+spec:
+  language: javascript
+  timeout: 25
+  description: Authorization process
+  environment:
+    - name: USER_BUCKET_ID
+      valueFrom:
+        resourceFieldRef:
+          schemaName: spica-food-delivery-asset-user-bucket
+    - name: SECRET_API_KEY
+      valueFrom:
+        resourceFieldRef:
+          apiKeyName: food-delivery-apikey
+  dependency:
+    - name: "@spica-devkit/bucket"
+      version: latest
+    - name: "@spica-devkit/identity"
+      version: latest
+  title: Food Delivery Authorization
+  code: ./function/spica-food-delivery-asset-authorization-function.js
+  runtime:
+    name: Node
+    language: Javascript
+---
+# TRIGGER - register
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: register
+spec:
+  type: http
+  active: true
+  name: register
+  func: spica-food-delivery-asset-authorization-function
+  httpOptions:
+    method: Post
+    path: /register
